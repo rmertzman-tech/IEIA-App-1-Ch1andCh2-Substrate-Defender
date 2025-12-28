@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Substrate Defender v2.6 | Mandela Resistance</title>
+    <title>Substrate Defender v2.7 | Full Master Edition</title>
     <style>
         :root {
             --matrix-green: #00ff41; --void-black: #0d0208; --text-white: #f0fdf4;
@@ -11,7 +11,7 @@
             --action-blue: #3b82f6;
         }
         body { font-family: 'Courier New', monospace; background: var(--void-black); color: var(--text-white); margin: 0; padding: 20px; line-height: 1.5; }
-        .app-container { max-width: 1100px; margin: 0 auto; border: 2px solid var(--border); border-radius: 12px; background: rgba(13, 2, 8, 0.98); position: relative; }
+        .app-container { max-width: 1100px; margin: 0 auto; border: 2px solid var(--border); border-radius: 12px; background: rgba(13, 2, 8, 0.98); position: relative; box-shadow: 0 0 30px rgba(0, 255, 65, 0.2); }
         
         header { padding: 1.5rem; border-bottom: 2px solid var(--border); text-align: center; background: #052e16; }
         h1 { margin: 0; font-size: 1.8rem; text-shadow: 0 0 10px var(--matrix-green); }
@@ -25,12 +25,12 @@
         .stat-label { font-size: 0.7rem; text-transform: uppercase; color: var(--matrix-green); }
         .stat-val { font-size: 1.8rem; font-weight: bold; }
 
-        /* Progress Meters */
+        /* Sapolsky Monitor */
         .meter-container { height: 25px; background: #111; border: 1px solid var(--border); border-radius: 13px; position: relative; margin: 10px 0; overflow: hidden; }
         #sapolsky-bar { height: 100%; width: 30%; background: var(--matrix-green); transition: 0.5s; }
         .limit-marker { position: absolute; left: 65%; top: 0; bottom: 0; width: 3px; background: var(--danger-red); box-shadow: 0 0 10px var(--danger-red); }
 
-        /* Interaction Elements */
+        /* Interaction Buttons */
         .btn-group { display: flex; gap: 10px; margin-top: 15px; flex-wrap: wrap; }
         .btn { flex: 1; padding: 12px; border: 1px solid var(--matrix-green); background: none; color: var(--matrix-green); cursor: pointer; font-weight: bold; font-family: inherit; transition: 0.2s; min-width: 140px; }
         .btn:hover { background: var(--matrix-green); color: black; }
@@ -41,9 +41,10 @@
         .hidden { display: none !important; }
         .alert-msg { color: var(--danger-red); font-weight: bold; display: none; text-align: center; padding: 10px; border: 1px solid var(--danger-red); margin-top: 10px; }
 
-        /* Orientation Overlay */
-        #orientation-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 100; display: flex; align-items: center; justify-content: center; padding: 20px; }
+        /* Modals */
+        #orientation-overlay, #audit-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 100; display: flex; align-items: center; justify-content: center; padding: 20px; }
         .modal { max-width: 650px; border: 2px solid var(--border); padding: 30px; border-radius: 12px; background: #000; box-shadow: 0 0 30px var(--matrix-green); }
+        .audit-score { color: var(--gold); font-size: 1.2rem; margin: 15px 0; border: 1px dashed var(--gold); padding: 15px; background: #1a1a00; }
 
         .sidebar { font-size: 0.85rem; border-left: 1px solid var(--border); padding-left: 20px; }
         dt { font-weight: bold; color: var(--gold); margin-top: 10px; }
@@ -53,18 +54,26 @@
 <body>
 
 <div id="orientation-overlay">
-    <div class="modal" role="dialog" aria-labelledby="modal-title">
-        <h2 id="modal-title">Constructor Orientation: BRC Defense</h2>
-        <p>Ethics is a <strong>metabolic achievement</strong>. To remain a "Self-Editor," you must perform work ($W$) to keep your biological hardware online.</p>
-        <p><strong>The Mandela Precedent:</strong> Nelson Mandela performed daily exercise in his cell to keep his coherence high while under <strong>Intentional Extraction</strong>. He defended his substrate to preserve his future agency.</p>
-        <p><strong>Your Goal:</strong> Diagnose challenges as <em>Intentional</em> or <em>Incidental</em> and deploy the correct defense to survive the shift.</p>
-        <button class="btn" onclick="closeOrientation()">Enter Simulation</button>
+    <div class="modal">
+        <h2>Constructor Orientation: BRC Defense</h2>
+        <p>Ethics is a <strong>metabolic achievement</strong>. Your Prefrontal Cortex (the "Self-Editor") requires energy ($W$) and low stress ($L_{GC}$) to function.</p>
+        <p><strong>The Mandela Precedent:</strong> Nelson Mandela performed daily exercise to keep his coherence high while under <strong>Intentional Extraction</strong>. He defended his substrate to preserve his future agency.</p>
+        <p><strong>Your Goal:</strong> Protect your substrate integrity. Diagnose the harm and apply the correct defense.</p>
+        <button class="btn" onclick="closeModal('orientation-overlay')">Enter Simulation</button>
+    </div>
+</div>
+
+<div id="audit-overlay" class="hidden">
+    <div class="modal">
+        <h2>Substrate Defense: Performance Review</h2>
+        <div id="audit-content"></div>
+        <button class="btn" onclick="location.reload()">Restart New Shift</button>
     </div>
 </div>
 
 <div class="app-container">
     <header>
-        <h1>SUBSTRATE DEFENDER v2.6</h1>
+        <h1>SUBSTRATE DEFENDER v2.7</h1>
         <p>Grounded in the Physics of Ethics & Character Construction</p>
     </header>
 
@@ -72,25 +81,25 @@
         <main>
             <div class="stat-grid">
                 <div class="stat-box">
-                    <span class="stat-label" id="budget-label">Metabolic Budget ($W$)</span>
-                    <div id="budget-val" class="stat-val" aria-labelledby="budget-label">100</div>
+                    <span class="stat-label">Metabolic Budget ($W$)</span>
+                    <div id="budget-val" class="stat-val">100</div>
                 </div>
                 <div class="stat-box">
-                    <span class="stat-label" id="stress-label">Internal Stress ($L_{GC}$)</span>
-                    <div id="stress-val" class="stat-val" aria-labelledby="stress-label">0.30</div>
+                    <span class="stat-label">Internal Stress ($L_{GC}$)</span>
+                    <div id="stress-val" class="stat-val">0.30</div>
                 </div>
             </div>
 
-            <label for="sapolsky-bar"><strong>Sapolsky Limit Monitor</strong> (65% Critical Threshold)</label>
+            <label><strong>Sapolsky Limit Monitor</strong> (65% Critical Threshold)</label>
             <div class="meter-container">
                 <div id="sapolsky-bar" role="progressbar" aria-valuenow="30" aria-valuemin="0" aria-valuemax="100"></div>
-                <div class="limit-marker" title="Sapolsky Limit"></div>
+                <div class="limit-marker"></div>
             </div>
 
             <div id="status-alert" class="alert-msg">TRUNCATION DETECTED: CHARACTER DEPTH OFFLINE</div>
 
             <div class="card" id="interaction-panel">
-                <h2 id="event-title">Simulation Standby</h2>
+                <h2 id="event-title">System Standby</h2>
                 <p id="event-desc">Waiting for environmental stressors to initialize...</p>
                 
                 <div id="diag-controls" class="hidden">
@@ -115,18 +124,21 @@
                 </div>
             </div>
 
-            <h3 id="log-heading">Defense Activity Log</h3>
-            <div class="event-log" id="log" aria-labelledby="log-heading"></div>
+            <h3>Defense Activity Log</h3>
+            <div class="event-log" id="log"></div>
         </main>
 
         <aside class="sidebar">
             <h2>The Extraction Matrix</h2>
             <dl>
                 <dt>Intentional Extraction</dt>
-                <dd>Systems that actively target your agency. <strong>Defense: Mandela Protocol (Resistance).</strong></dd>
+                <dd>Systems designed to break your agency (e.g., Robben Island). <strong>Defense: Mandela Protocol (Resistance).</strong></dd>
                 <dt>Incidental Depletion</dt>
-                <dd>Systems that burn you out by accident/poor design. <strong>Defense: Boundary Setting (Redesign).</strong></dd>
+                <dd>Systems that burn you out through poor design (e.g., pandemic workloads). <strong>Defense: Boundary Setting (Redesign).</strong></dd>
+                <dt>Sapolsky Limit</dt>
+                <dd>Stress > 0.65 physically shuts down the PFC. Ethics becomes impossible.</dd>
             </dl>
+            
             
             
         </aside>
@@ -138,41 +150,36 @@
     let stress = 0.30;
     let currentScenario = null;
     let userDiagnosis = null;
+    let correctDefenses = 0;
+    let totalChallenges = 0;
+    let hasTruncated = false;
 
     const scenarios = [
         { 
-            title: "The Robben Island Challenge", 
-            desc: "The regime has moved you to a 7x7 foot cell with minimal sunlight. The environment is engineered to force a psychological collapse.",
+            title: "Robben Island Isolation", 
+            desc: "The system has isolated you to induce cognitive collapse. It is an intentional attempt to extract your submission.",
             type: "intentional", correct: "mandela", hit: 0.25, cost: 35 
         },
         { 
-            title: "Pandemic Burnout", 
-            desc: "The ICU is at 200% capacity. You are being asked to ignore your biological needs to save others. The harm is systemic, not malicious.",
+            title: "Pandemic ICU Fatigue", 
+            desc: "The hospital is at 200% capacity. You are being asked to ignore your biological needs. The harm is incidental/poor design.",
             type: "incidental", correct: "boundary", hit: 0.15, cost: 20 
         },
         {
             title: "The Thiokol Pressure",
-            desc: "Managers are pressuring you to sign off on a launch you know is unsafe. They are threatening your career to ensure compliance.",
-            type: "intentional", correct: "mandela", hit: 0.20, cost: 25
+            desc: "Managers are threatening your job to force you to sign off on an unsafe launch. They are intentionally suppressing your agency.",
+            type: "intentional", correct: "mandela", hit: 0.20, cost: 30
         }
     ];
 
-    function closeOrientation() {
-        document.getElementById('orientation-overlay').classList.add('hidden');
-        updateUI();
-    }
+    function closeModal(id) { document.getElementById(id).classList.add('hidden'); updateUI(); }
 
     function triggerEvent() {
-        if (scenarios.length === 0) {
-            document.getElementById('event-title').innerText = "Simulation Complete";
-            document.getElementById('event-desc').innerText = "Audit your logs. Did you protect your substrate or did you truncate?";
-            document.getElementById('next-btn').disabled = true;
-            return;
-        }
+        if (scenarios.length === 0) return generateAudit();
         currentScenario = scenarios.shift();
+        totalChallenges++;
         document.getElementById('event-title').innerText = currentScenario.title;
         document.getElementById('event-desc').innerText = currentScenario.desc;
-        
         document.getElementById('diag-controls').classList.remove('hidden');
         document.getElementById('cycle-controls').classList.add('hidden');
     }
@@ -185,31 +192,25 @@
 
     function defend(method) {
         const isCorrect = (userDiagnosis === currentScenario.type && method === currentScenario.correct);
+        if(isCorrect) correctDefenses++;
         
-        // Damage Calculation
         const finalStress = isCorrect ? currentScenario.hit * 0.4 : currentScenario.hit;
         const finalCost = isCorrect ? currentScenario.cost * 0.5 : currentScenario.cost;
 
         budget -= finalCost;
         stress += finalStress;
-        
+        if(stress >= 0.65) hasTruncated = true;
+
         const logEntry = document.createElement('p');
-        if(isCorrect) {
-            logEntry.innerHTML = `[COHERENT] <strong>${currentScenario.title}</strong>: Correct defense used. Substrate integrity preserved.`;
-            logEntry.style.color = "var(--matrix-green)";
-        } else {
-            logEntry.innerHTML = `[DECOHERENT] <strong>${currentScenario.title}</strong>: Incorrect diagnosis or tactic. Substrate took full damage.`;
-            logEntry.style.color = "var(--danger-red)";
-        }
-        
+        logEntry.innerHTML = isCorrect ? `<span style="color:var(--matrix-green)">[COHERENT] ${currentScenario.title}: Damage mitigated.</span>` : `<span style="color:var(--danger-red)">[DECOHERENT] ${currentScenario.title}: Substrate took full damage.</span>`;
         document.getElementById('log').prepend(logEntry);
+        
         document.getElementById('defense-controls').classList.add('hidden');
         document.getElementById('cycle-controls').classList.remove('hidden');
         updateUI();
     }
 
     function recover() {
-        if(budget >= 100 && stress <= 0.3) return;
         budget = Math.min(100, budget + 15);
         stress = Math.max(0.2, stress - 0.05);
         const logEntry = document.createElement('p');
@@ -222,20 +223,38 @@
     function updateUI() {
         document.getElementById('budget-val').innerText = Math.round(budget);
         document.getElementById('stress-val').innerText = stress.toFixed(2);
-        
         const bar = document.getElementById('sapolsky-bar');
         const width = Math.min(100, stress * 100);
         bar.style.width = width + "%";
-        bar.setAttribute('aria-valuenow', width);
-
-        const alert = document.getElementById('status-alert');
+        
         if (stress >= 0.65) {
             bar.style.background = "var(--danger-red)";
-            alert.style.display = "block";
+            document.getElementById('status-alert').style.display = "block";
         } else {
             bar.style.background = "var(--matrix-green)";
-            alert.style.display = "none";
+            document.getElementById('status-alert').style.display = "none";
         }
+    }
+
+    function generateAudit() {
+        const audit = document.getElementById('audit-content');
+        let status = hasTruncated ? "SUBSTRATE FAILURE" : "SUBSTRATE INTEGRITY SECURED";
+        let scoreMsg = "";
+
+        if (hasTruncated) {
+            scoreMsg = `<p class="audit-score">STATUS: TRUNCATED (Survival Mode)</p>
+            <p><strong>Diagnosis:</strong> You exceeded the Sapolsky Limit ($L_{GC} > 0.65$). Your Character Depth collapsed into tribal/reactive patterns.</p>
+            <p><strong>Recommendation:</strong> Do not ignore the 'RECOVER' button. BRC defense requires metabolic maintenance ($W$). Rest is a tactical necessity.</p>`;
+        } else if (correctDefenses === totalChallenges) {
+            scoreMsg = `<p class="audit-score">STATUS: MASTER CONSTRUCTOR (100% Coherence)</p>
+            <p><strong>Praise:</strong> You distinguished perfectly between Malicious Extraction and Poor System Design. Like Mandela, you used your $W$ to preserve your $F$-Vector. Your Identity Kernel is high-resolution.</p>`;
+        } else {
+            scoreMsg = `<p class="audit-score">STATUS: AGENTIAL DRIFT (${correctDefenses}/${totalChallenges} Correct)</p>
+            <p><strong>Feedback:</strong> You misidentified some sources of harm. Remember: Intentional Extraction requires <em>Resistance</em> (Combat); Incidental Depletion requires <em>Boundaries</em> (Redesign).</p>`;
+        }
+
+        audit.innerHTML = `<h3>Audit Results: ${status}</h3>${scoreMsg}<p>Final Budget: ${Math.round(budget)}% | Final Stress: ${stress.toFixed(2)}</p>`;
+        document.getElementById('audit-overlay').classList.remove('hidden');
     }
 </script>
 </body>
