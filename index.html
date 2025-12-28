@@ -3,48 +3,49 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>App 1: The Substrate Defender | Ethics Foundations</title>
+    <title>Substrate Defender v2.5 | Mandela Resistance</title>
     <style>
         :root {
             --matrix-green: #00ff41; --void-black: #0d0208; --text-white: #f0fdf4;
             --danger-red: #ff3131; --gold: #ffd700; --panel-bg: #111827; --border: #22c55e;
+            --action-blue: #3b82f6;
         }
         body { font-family: 'Courier New', monospace; background: var(--void-black); color: var(--text-white); margin: 0; padding: 20px; line-height: 1.5; }
-        .app-container { max-width: 1100px; margin: 0 auto; border: 2px solid var(--border); border-radius: 12px; background: rgba(13, 2, 8, 0.98); overflow: hidden; }
+        .app-container { max-width: 1100px; margin: 0 auto; border: 2px solid var(--border); border-radius: 12px; background: rgba(13, 2, 8, 0.98); }
         
         header { padding: 1.5rem; border-bottom: 2px solid var(--border); text-align: center; background: #052e16; }
         h1 { margin: 0; font-size: 1.8rem; text-shadow: 0 0 10px var(--matrix-green); }
         
         .main-layout { display: grid; grid-template-columns: 1fr 350px; gap: 20px; padding: 20px; }
-        .card { border: 1px solid var(--border); padding: 1.5rem; border-radius: 8px; background: #000; }
+        .card { border: 1px solid var(--border); padding: 1.5rem; border-radius: 8px; background: #000; margin-bottom: 15px; }
         
         /* Stats Dashboard */
         .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
-        .stat-box { border: 1px solid var(--border); padding: 10px; text-align: center; }
+        .stat-box { border: 1px solid var(--border); padding: 10px; text-align: center; background: #051a05; }
         .stat-label { font-size: 0.7rem; text-transform: uppercase; color: var(--matrix-green); }
         .stat-val { font-size: 1.8rem; font-weight: bold; }
 
-        /* The Sapolsky Meter */
+        /* Progress Meters */
         .meter-container { height: 25px; background: #111; border: 1px solid var(--border); border-radius: 13px; position: relative; margin: 10px 0; overflow: hidden; }
         #sapolsky-bar { height: 100%; width: 30%; background: var(--matrix-green); transition: 0.5s; }
-        .limit-marker { position: absolute; left: 65%; top: 0; bottom: 0; width: 2px; background: var(--danger-red); }
+        .limit-marker { position: absolute; left: 65%; top: 0; bottom: 0; width: 3px; background: var(--danger-red); box-shadow: 0 0 10px var(--danger-red); }
 
-        /* Scenarios */
-        .scenario-area { min-height: 200px; border: 1px dashed var(--border); padding: 20px; margin-bottom: 20px; position: relative; }
-        .event-log { font-size: 0.9rem; color: #a3e635; height: 150px; overflow-y: auto; border: 1px solid #14532d; padding: 10px; margin-top: 10px; }
-
-        /* Diagnosis Buttons */
-        .btn-group { display: flex; gap: 10px; margin-top: 15px; }
-        .btn { flex: 1; padding: 12px; border: 1px solid var(--matrix-green); background: none; color: var(--matrix-green); cursor: pointer; font-weight: bold; font-family: inherit; }
+        /* Interaction Elements */
+        .btn-group { display: flex; gap: 10px; margin-top: 15px; flex-wrap: wrap; }
+        .btn { flex: 1; padding: 12px; border: 1px solid var(--matrix-green); background: none; color: var(--matrix-green); cursor: pointer; font-weight: bold; font-family: inherit; transition: 0.2s; }
         .btn:hover { background: var(--matrix-green); color: black; }
-        .btn-diag { border-color: var(--gold); color: var(--gold); }
-        .btn-diag:hover { background: var(--gold); color: black; }
-
+        .btn-mandela { border-color: var(--gold); color: var(--gold); box-shadow: 0 0 5px var(--gold); }
+        .btn-mandela:hover { background: var(--gold); color: black; }
+        
+        .event-log { font-size: 0.85rem; color: #a3e635; height: 180px; overflow-y: auto; border: 1px solid #14532d; padding: 10px; margin-top: 15px; background: #000a00; }
         .hidden { display: none; }
         .alert { color: var(--danger-red); font-weight: bold; animation: blink 1s infinite; }
         @keyframes blink { 50% { opacity: 0.2; } }
 
-        /* Glossary Sidebar */
+        /* Orientation Overlay */
+        #orientation-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 100; display: flex; align-items: center; justify-content: center; padding: 20px; }
+        .modal { max-width: 650px; border: 2px solid var(--matrix-green); padding: 30px; border-radius: 12px; background: #000; }
+
         .sidebar { font-size: 0.85rem; border-left: 1px solid var(--border); padding-left: 20px; }
         dt { font-weight: bold; color: var(--gold); margin-top: 10px; }
         dd { margin: 0 0 10px 0; color: #cbd5e1; }
@@ -52,10 +53,19 @@
 </head>
 <body>
 
+<div id="orientation-overlay">
+    <div class="modal">
+        <h2>Constructor Orientation: BRC Defense</h2>
+        <p>Ethics is not just "thinking"; it is <strong>performing work ($W$)</strong> to keep your biological hardware online.</p>
+        <p><strong>The Mandela Precedent:</strong> On Robben Island, Nelson Mandela performed daily calisthenics in his tiny cell. He wasn't just staying fit; he was defending his <strong>Identity Kernel</strong> from a system designed to extract his humanity.</p>
+        <p><strong>Your Task:</strong> Survive the "Shift" by identifying the source of harm and applying the correct metabolic defense.</p>
+        <button class="btn" onclick="closeOrientation()">Enter Simulation</button>
+    </div>
+</div>
+
 <div class="app-container">
     <header>
-        <h1>APP 1: THE SUBSTRATE DEFENDER</h1>
-        <p>Goal: Protect your BRC from Intentional and Incidental Harm</p>
+        <h1>SUBSTRATE DEFENDER v2.5</h1>
     </header>
 
     <div class="main-layout">
@@ -66,129 +76,113 @@
                     <div id="budget-val" class="stat-val">100</div>
                 </div>
                 <div class="stat-box">
-                    <span class="stat-label">Internal Stress ($L_{GC}$)</span>
+                    <span class="stat-label">Stress ($L_{GC}$)</span>
                     <div id="stress-val" class="stat-val">0.30</div>
                 </div>
             </div>
 
-            <label for="sapolsky-meter"><strong>Sapolsky Limit Monitor</strong> (65% is the Breaking Point)</label>
-            <div class="meter-container" id="sapolsky-meter">
-                <div id="sapolsky-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="30"></div>
-                <div class="limit-marker" aria-label="Critical Sapolsky Limit"></div>
-            </div>
+            <label><strong>Sapolsky Limit</strong> (65% Threshold)</label>
+            <div class="meter-container"><div id="sapolsky-bar" role="progressbar" aria-valuenow="30"></div><div class="limit-marker"></div></div>
 
-            <div class="scenario-area" id="scenario-panel">
-                <h2 id="event-title">System Status: Nominal</h2>
-                <p id="event-desc">Click "Begin Shift" to simulate ethical challenges.</p>
+            <div class="card" id="interaction-panel">
+                <h2 id="event-title">Standby</h2>
+                <p id="event-desc">Waiting for external stressors...</p>
                 
-                <div id="diagnosis-controls" class="hidden">
-                    <p><strong>DIAGNOSTIC TASK:</strong> Is this harm intentional or incidental?</p>
+                <div id="diag-controls" class="hidden">
+                    <p><strong>STEP 1: Diagnose Source</strong></p>
                     <div class="btn-group">
-                        <button class="btn btn-diag" onclick="diagnose('intentional')">Intentional Extraction</button>
-                        <button class="btn btn-diag" onclick="diagnose('incidental')">Incidental Depletion</button>
+                        <button class="btn" onclick="diagnose('incidental')">Incidental Depletion</button>
+                        <button class="btn" onclick="diagnose('intentional')">Intentional Extraction</button>
                     </div>
                 </div>
-                <button id="start-btn" class="btn" onclick="nextEvent()">Begin Simulation Shift</button>
+
+                <div id="defense-controls" class="hidden">
+                    <p><strong>STEP 2: Deploy Defense</strong></p>
+                    <div class="btn-group">
+                        <button class="btn" onclick="defend('boundary')">Set Boundary</button>
+                        <button class="btn btn-mandela" onclick="defend('mandela')">Mandela Protocol (Resistance)</button>
+                    </div>
+                </div>
+
+                <div id="cycle-controls" style="margin-top:20px;">
+                    <button id="next-btn" class="btn" onclick="triggerEvent()">Wait for Next Challenge</button>
+                    <button class="btn" style="border-color:#3b82f6; color:#3b82f6;" onclick="recover()">Rest & Community (+W)</button>
+                </div>
             </div>
 
-            <h3>Diagnostic History</h3>
             <div class="event-log" id="log"></div>
         </main>
 
         <aside class="sidebar">
-            <h2>Definitions</h2>
+            <h2>The Extraction Matrix</h2>
             <dl>
-                <dt>BRC Defense</dt>
-                <dd>Active resistance to the destruction of your biological capacity to think and choose.</dd>
                 <dt>Intentional Extraction</dt>
-                <dd>Systems designed to break you down for their gain (e.g., Malicious managers).</dd>
+                <dd>Systems designed to break you (e.g., Robben Island). <strong>Defense: Mandela Protocol.</strong></dd>
                 <dt>Incidental Depletion</dt>
-                <dd>Systems that burn you out through poor design (e.g., COVID hospital loads).</dd>
-                <dt>The Sapolsky Limit</dt>
-                <dd>The point where stress physically shuts down your prefrontal cortex.</dd>
+                <dd>Systems that burn you out through poor design. <strong>Defense: Boundary Setting.</strong></dd>
             </dl>
+            
+            
+            
         </aside>
     </div>
 </div>
 
 <script>
-    let budget = 100;
-    let stress = 0.30;
-    let currentEvent = null;
+    let budget = 100; let stress = 0.30; let current = null; let selected = null;
 
-    const events = [
+    const scenarios = [
         { 
-            title: "The Double Shift", 
-            desc: "A colleague called out sick. Management asks you to work a 16-hour shift. No malicious intent, but you are exhausted.",
-            cost: 20, stressInc: 0.15, type: "incidental",
-            explanation: "CORRECT. This is Incidental Depletion. The system is poorly designed for emergencies, draining your BRC without malice."
+            title: "The Robben Island Challenge", 
+            desc: "The system has isolated you and provided poor nutrition to induce cognitive collapse. It is designed to extract your submission.",
+            type: "intentional", correct: "mandela", hit: 0.25, cost: 35 
         },
         { 
-            title: "Predatory Quotas", 
-            desc: "The board implemented an algorithm that hides your breaks to maximize stock value. This is a design choice to use you up.",
-            cost: 30, stressInc: 0.25, type: "intentional",
-            explanation: "CORRECT. This is Intentional Extraction. Your agency is being suppressed for profit. Resistance is required."
-        },
-        { 
-            title: "Bureaucratic Drift", 
-            desc: "New grant reporting requirements take 10 hours a week. It's meant for accountability, but you've lost all time for deep work.",
-            cost: 15, stressInc: 0.10, type: "incidental",
-            explanation: "CORRECT. Incidental Depletion. Well-meaning accountability measures often ignore the biological cost of 'paperwork'."
+            title: "Hospital Fatigue", 
+            desc: "Your medical facility is understaffed during a crisis. The exhaustion is a byproduct of poor planning, not malice.",
+            type: "incidental", correct: "boundary", hit: 0.15, cost: 20 
         }
     ];
 
-    function updateUI() {
-        document.getElementById('budget-val').innerText = budget;
-        document.getElementById('stress-val').innerText = stress.toFixed(2);
-        
-        let bar = document.getElementById('sapolsky-bar');
-        let width = stress * 100;
-        bar.style.width = width + "%";
-        bar.setAttribute('aria-valuenow', width);
-
-        if(stress >= 0.65) {
-            bar.style.background = "var(--danger-red)";
-            document.getElementById('event-title').innerHTML = "<span class='alert'>TRUNCATION DETECTED</span>";
-            document.getElementById('event-desc').innerText = "System Failure: Character depth lost. You are now in Survival Mode.";
-        } else {
-            bar.style.background = "var(--matrix-green)";
-        }
+    function closeOrientation() { document.getElementById('orientation-overlay').classList.add('hidden'); }
+    function triggerEvent() {
+        if(scenarios.length === 0) return;
+        current = scenarios.shift();
+        document.getElementById('event-title').innerText = current.title;
+        document.getElementById('event-desc').innerText = current.desc;
+        document.getElementById('diag-controls').classList.remove('hidden');
+        document.getElementById('cycle-controls').classList.add('hidden');
     }
-
-    function nextEvent() {
-        if (events.length === 0) {
-            document.getElementById('event-title').innerText = "Shift Complete";
-            document.getElementById('event-desc').innerText = "Audit your log to see your substrate defense performance.";
-            document.getElementById('start-btn').classList.add('hidden');
-            return;
-        }
-        document.getElementById('start-btn').classList.add('hidden');
-        document.getElementById('diagnosis-controls').classList.remove('hidden');
-        
-        currentEvent = events.shift();
-        document.getElementById('event-title').innerText = currentEvent.title;
-        document.getElementById('event-desc').innerText = currentEvent.desc;
+    function diagnose(type) {
+        selected = type;
+        document.getElementById('diag-controls').classList.add('hidden');
+        document.getElementById('defense-controls').classList.remove('hidden');
     }
+    function defend(method) {
+        let success = (selected === current.type && method === current.correct);
+        let finalStress = success ? current.hit * 0.4 : current.hit;
+        let finalCost = success ? current.cost * 0.5 : current.cost;
 
-    function diagnose(choice) {
-        budget -= currentEvent.cost;
-        stress += currentEvent.stressInc;
-
-        let log = document.getElementById('log');
+        budget -= finalCost; stress += finalStress;
+        
+        let msg = success ? `[COHERENT] ${current.title} handled. Substrate integrity maintained.` : `[DECOHERENT] Failed to defend ${current.title}. Massive agential drift.`;
         let entry = document.createElement('p');
+        entry.innerText = msg; entry.style.color = success ? "var(--matrix-green)" : "var(--danger-red)";
+        document.getElementById('log').prepend(entry);
         
-        if(choice === currentEvent.type) {
-            entry.innerText = "[PASS] " + currentEvent.title + ": " + currentEvent.explanation;
-        } else {
-            entry.innerText = "[FAIL] " + currentEvent.title + ": You misdiagnosed the source, but the BRC damage remains the same.";
-            entry.style.color = "var(--danger-red)";
-        }
-        
-        log.prepend(entry);
-        document.getElementById('diagnosis-controls').classList.add('hidden');
-        document.getElementById('start-btn').classList.remove('hidden');
-        document.getElementById('start-btn').innerText = "Continue Shift";
-        updateUI();
+        document.getElementById('defense-controls').classList.add('hidden');
+        document.getElementById('cycle-controls').classList.remove('hidden');
+        update();
+    }
+    function recover() {
+        budget = Math.min(100, budget + 15); stress = Math.max(0.2, stress - 0.05);
+        update();
+    }
+    function update() {
+        document.getElementById('budget-val').innerText = Math.round(budget);
+        document.getElementById('stress-val').innerText = stress.toFixed(2);
+        document.getElementById('sapolsky-bar').style.width = (stress * 100) + "%";
+        if(stress >= 0.65) document.getElementById('sapolsky-bar').style.background = "var(--danger-red)";
     }
 </script>
 </body>
